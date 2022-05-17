@@ -16,11 +16,13 @@ public class Education {
     List<List<List<Double>>> dataSet;                               
     List<List<Double>> maxAndMinList;                             
     List<List<List<List<Double>>>> educationAndTestList;
-    List<Double> neuronOutputs;
+
     
     
     double[][][] allFirstWeights;
+    double[][][] allFirstWeightsForWrite;
     double[][]   allSecondWeights;
+    double[][]   allSecondWeightsForWrite;
     double[][] firstWeights;
     double[][] firstWeightsLastValues;
     double[][] errorMargins;
@@ -29,7 +31,7 @@ public class Education {
     double[] secondWeightsLastValues;
     
     
-    LineChartEx2 graph = new LineChartEx2();
+    createLineChart graph = new createLineChart();
     Neuron[] Neurons;
     outputLayerNeuron outputNeuron;
     resetWeights reset;
@@ -90,6 +92,9 @@ public class Education {
         biasWeights = new double[numOfNeuron];
         allFirstWeights = new double[educationAndTestList.get(0).size()][depAndIndepVariables.get(0)][numOfNeuron];
         allSecondWeights = new double[educationAndTestList.get(0).size()][numOfNeuron];
+        allFirstWeightsForWrite = new double[educationAndTestList.get(0).size()][depAndIndepVariables.get(0)][numOfNeuron];
+        allSecondWeightsForWrite = new double[educationAndTestList.get(0).size()][numOfNeuron];
+        
 
         reset= new resetWeights(numOfNeuron,secondWeightsLastValues,depAndIndepVariables,firstWeightsLastValues,firstWeights,biasWeights,secondWeights,outputBiasWeight);
         
@@ -104,14 +109,16 @@ public class Education {
             do{
                 for (int numberOfLines = 0; numberOfLines < educationAndTestList.get(0).get(whichDataSet).size() - 1; numberOfLines++) {   
                        
-                    neuronOutputs= new ArrayList<>();
+                    List<Double> neuronOutputs= new ArrayList<>();
 
                     for (int i = 0; i < numOfNeuron; i++) {                     
                         Neurons[i] = new Neuron(educationAndTestList.get(0).get(whichDataSet).get(numberOfLines), firstWeights, biasWeights, i, numOfNeuron); 
                         neuronOutputs.add(Neurons[i].output);
                     }   
 
-                    outputNeuron = new outputLayerNeuron(neuronOutputs,secondWeights,numOfNeuron,outputBiasWeight);            
+                    outputNeuron = new outputLayerNeuron(neuronOutputs,secondWeights,numOfNeuron,outputBiasWeight); 
+                    
+                    
 
 
                     updateSecondWeights(whichDataSet, numberOfLines, outputNeuron.output);
@@ -133,42 +140,44 @@ public class Education {
 
                 epoch++;
 
-                /*if(whichDataSet==0)
+                if(whichDataSet==0)
                     graph.series1.add(epoch,errorMarginOfMSE);
 
                 if(whichDataSet==1)
                     graph.series2.add(epoch,errorMarginOfMSE);
 
                 if(epoch % 50 == 0)
-                    graph.setVisible(true);*/
-                if(epoch%100 == 0)
-                    System.out.println(epoch+" "+MAPE);
+                    graph.setVisible(true);
+                
                 
 
                 y1OutputZero = 0;
                 sumMAPE = 0;
-            } while(epoch < 10000);
+            } while(epoch < 100|| MAPE<3);//100 çok az bir epoch değeri olduğu için MSE hata payı fazla çıkıyor. Eğer buradaki epoch'u arttırırsanız daha sağlıklı sonuçlar elde edebilirsiniz.
             
+            
+            allFirstWeightsForWrite[whichDataSet] = firstWeights;
+            allSecondWeightsForWrite[whichDataSet] = secondWeights;
             allFirstWeights[whichDataSet] = firstWeights;
             allSecondWeights[whichDataSet] = secondWeights;
 
-            System.out.println("Epoch "+epoch+" değerine ulaştığı için sonlandı.");
 
             epoch = 1;
             errorMarginOfMSE = 0;
             sumMAPE = 0;
             
-            Test test= new Test(educationAndTestList.get(1), whichDataSet ,numOfNeuron ,allFirstWeights ,biasWeights ,secondWeights ,outputBiasWeight );
+            Test test= new Test(educationAndTestList.get(1), whichDataSet ,numOfNeuron ,allFirstWeights ,biasWeights ,allSecondWeights ,outputBiasWeight );
 
-            Results(firstWeights, secondWeights, biasWeights,outputBiasWeight,whichDataSet);
             
             reset= new resetWeights(numOfNeuron,secondWeightsLastValues,depAndIndepVariables,firstWeightsLastValues,firstWeights,biasWeights,secondWeights,outputBiasWeight);
             if(whichDataSet==0)
             System.out.println("\nY1 çıkışlı veriseti bitti. Y2 çıkışlı veriseti sonuçları: \n");
-     
+            
+            
         }       
-        
-        
+
+        writeToFile file = new writeToFile(allFirstWeightsForWrite,allSecondWeightsForWrite,numOfNeuron);
+
     }
 
     private void updateFirstWeights(int whichDataSet, int numOfLines) {
@@ -201,25 +210,6 @@ public class Education {
                 secondWeights[i] = weightChangeAmount + secondWeights[i];  
             }
     }
-    private void Results(double[][] ilk_agirliklar, double[] ikinci_agirliklar, double[] bias_agirliklar, double cikis_bias_agirlik, int veriSetiSirasi) {
-                        
-                        neuronOutputs= new ArrayList<>();
-                            
-                        
-                        for (int i = 0; i < numOfNeuron; i++) {                     
-                            Neurons[i] = new Neuron(educationAndTestList.get(0).get(veriSetiSirasi).get(95), ilk_agirliklar, bias_agirliklar, i, numOfNeuron);
-                            neuronOutputs.add(Neurons[i].output);
-                        }
-
-                        outputNeuron = new outputLayerNeuron(neuronOutputs,ikinci_agirliklar,numOfNeuron,cikis_bias_agirlik);
-                       
-                        for (int i = 0; i < 9; i++) {
-                            System.out.println(educationAndTestList.get(0).get(veriSetiSirasi).get(95).get(i));
-                        }
-                        
-                        System.out.println("-----------------------");
-                        System.out.println("ÇIKIŞ : " + outputNeuron.output);
-                        
-    }
+    
 
 }

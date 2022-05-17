@@ -7,7 +7,7 @@ public class resetWeights {
     
     Random r= new Random();
     
-    public resetWeights(int numOfNeuron, double[] secondWeightsLastVariables, List<Integer>depAndIndepValues, double[][] firstWeightsLastValues, 
+    public resetWeights(int numOfNeuron, double[] secondWeightsLastVariables, List<Integer> depAndIndepValues, double[][] firstWeightsLastValues, 
     double[][] firstWeights, double[] biasWeights,double[] secondWeights, double outputBiasWeight){
         
         resetFirstWeights(numOfNeuron,depAndIndepValues,firstWeights);

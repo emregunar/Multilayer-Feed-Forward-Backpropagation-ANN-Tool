@@ -11,12 +11,12 @@ public class outputLayerNeuron {
     int numOfNeuron;
     
 
-    public outputLayerNeuron(List<Double> outputNeuron,double[]ikinci_agirliklar,int numOfNeuron,double outputBiasWeights){
+    public outputLayerNeuron(List<Double> outputNeuron,double[]secondWeights,int numOfNeuron,double outputBiasWeights){
         this.sum=0;
         this.output=0;
         this.bias=1;
         this.numOfNeuron= numOfNeuron;
-        sumFunction(outputNeuron,numOfNeuron,ikinci_agirliklar,outputBiasWeights);
+        sumFunction(outputNeuron,numOfNeuron,secondWeights,outputBiasWeights);
         activationFunction();
     }
 

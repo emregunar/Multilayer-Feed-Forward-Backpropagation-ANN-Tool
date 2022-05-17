@@ -10,7 +10,7 @@ double testMAPE;
 Neuron[] neurons;
 
 
-public Test(List<List<List<Double>>> testDataSet,int placeOfDataSet, int numOfNeuron,double [][][] allFirstWeights,double[] biasWeights, double[] secondWeights, double outputBiasWeights ){
+public Test(List<List<List<Double>>> testDataSet,int placeOfDataSet, int numOfNeuron,double [][][] allFirstWeights,double[] biasWeights, double[][] allSecondWeights, double outputBiasWeights ){
     this.testMAPE= testMAPE;
     this.sumOfTestMAPE= 0;
     
@@ -24,7 +24,7 @@ public Test(List<List<List<Double>>> testDataSet,int placeOfDataSet, int numOfNe
             neuronOutputs.add(neurons[i].output);
         }
         
-        outputLayerNeuron output = new outputLayerNeuron(neuronOutputs,secondWeights,numOfNeuron,outputBiasWeights);
+        outputLayerNeuron output = new outputLayerNeuron(neuronOutputs,allSecondWeights[placeOfDataSet],numOfNeuron,outputBiasWeights);
         
         if(testDataSet.get(placeOfDataSet).get(numOfLines).get(8) != 0){
               sumOfTestMAPE += Math.abs(testDataSet.get(placeOfDataSet).get(numOfLines).get(8) - output.output) / testDataSet.get(placeOfDataSet).get(numOfLines).get(8);

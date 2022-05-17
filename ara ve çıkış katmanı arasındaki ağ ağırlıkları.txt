@@ -1,0 +1,8 @@
+Y1 çıkışlı verisetindeki ara ve çıkış katmanları arasındaki ağırlıklar:
+1. nöron ağırlıkları:0.53 
+2. nöron ağırlıkları:0.75 
+
+Y2 çıkışlı verisetindeki ara ve çıkış katmanları arasındaki ağırlıklar:
+1. nöron ağırlıkları:0.53 
+2. nöron ağırlıkları:0.75 
+
